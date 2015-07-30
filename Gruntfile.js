@@ -169,9 +169,9 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
-    'concat',
-    'cssmin',
-    'uglify',
+    //'concat',
+    //'cssmin',
+    //'uglify',
     //'clean',
   ]);
 

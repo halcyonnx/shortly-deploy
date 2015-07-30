@@ -1,6 +1,6 @@
 var app = require('./server-config.js');
 
-var port = 4568;
+var port = process.evn.NODE ||4568;
 
 app.listen(port);
 
