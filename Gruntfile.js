@@ -126,7 +126,7 @@ module.exports = function(grunt) {
       },
 
       'git-push': {
-        command: 'git --no-pager --force push azure master',
+        command: 'git --no-pager push azure master',
         options: {
           failOnError: true,
           stdout: true,
