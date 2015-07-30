@@ -3,6 +3,12 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      dist: {
+        src: [
+          './public/client/*.js',
+        ],
+        dest: './public/dist/production.js',
+      }
     },
 
     mochaTest: {
@@ -21,11 +27,37 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      client: {
+        src: './public/dist/production.js', 
+        dest: './public/dist/production.min.js',
+      },
+      lib: {
+        backbone: {
+          src: './public/lib/backbone.js',
+          dest: './public/lib/backbone.min.js'
+        },
+        handlebars: {
+          src: './public/lib/handlebars.js',
+          dest: './public/lib/handlebars.min.js'
+        },
+        jquery: {
+          src: './public/lib/jquery.js',
+          dest: './public/lib/jquery.min.js'
+        },
+        underscore: {
+          src: './public/lib/underscore.js',
+          dest: './public/lib/underscore.min.js'
+        },
+      }
     },
 
     jshint: {
       files: [
         // Add filespec list here
+        './public/**/*.js',
+        './app/**/*.js',
+        './lib/*.js',
+        './*.js'
       ],
       options: {
         force: 'true',
@@ -39,6 +71,24 @@ module.exports = function(grunt) {
 
     cssmin: {
         // Add filespec list here
+      target: {
+        files: [{
+          expand: true,
+          cwd: './public',
+          src: ['*.css', '!*.min.css'],
+          dest: './public/dist',
+          ext: '.min.css'
+        }]
+      }
+    },
+
+    clean: {
+
+      lib: ['./public/lib/*.js', '!./public/lib/*.min.js'],
+      client: ['./public/client/*.js'],
+      style: ['./public/style.css'],
+      dist: ['./public/dist/*.js', '!./public/dist/*.min.js']
+
     },
 
     watch: {
@@ -59,7 +109,29 @@ module.exports = function(grunt) {
     },
 
     shell: {
-      prodServer: {
+      'git-add': {
+        command: 'git --no-pager add .',
+        options: {
+          stdout: true,
+          stderr: true
+        }
+      },
+
+      'git-commit': {
+        command: 'git --no-pager commit -m "Deployment"',
+        options: {
+          stdout: true,
+          stderr: true
+        }
+      },
+
+      'git-push': {
+        command: 'git --no-pager push azure master',
+        options: {
+          failOnError: true,
+          stdout: true,
+          stderr: true
+        }
       }
     },
   });
@@ -69,6 +141,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-nodemon');
@@ -91,15 +164,21 @@ module.exports = function(grunt) {
   ////////////////////////////////////////////////////
 
   grunt.registerTask('test', [
+    'jshint',
     'mochaTest'
   ]);
 
   grunt.registerTask('build', [
+    'concat',
+    'cssmin',
+    'uglify',
+    //'clean',
   ]);
 
   grunt.registerTask('upload', function(n) {
     if(grunt.option('prod')) {
       // add your production server task here
+      grunt.task.run(['shell']);
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
@@ -107,6 +186,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', [
       // add your production server task here
+      'test',
+      'upload'
   ]);
 
 
