@@ -103,7 +103,7 @@ module.exports = function(grunt) {
         ],
         tasks: [
           'concat',
-          'uglify'
+          'uglify:client'
         ]
       },
       css: {
@@ -184,6 +184,7 @@ module.exports = function(grunt) {
       // add your production server task here
       grunt.task.run(['shell']);
     } else {
+      grunt.task.run(['build']);
       grunt.task.run([ 'server-dev' ]);
     }
   });

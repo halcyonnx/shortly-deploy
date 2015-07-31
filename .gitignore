@@ -5,6 +5,9 @@ azure.err
 iisnode.yml
 node_modules
 *.sqlite
+db/**
+public/dist/*.js
+public/dist/*.css
 
 # Icon must ends with two \r.
 Icon

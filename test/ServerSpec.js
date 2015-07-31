@@ -4,15 +4,15 @@ var expect = require('chai').expect;
 var app = require('../server-config.js');
 
 var db = require('../app/config');
-var User = require('../app/models/user');
-var Link = require('../app/models/link');
+// var User = require('../app/models/user');
+// var Link = require('../app/models/link');
 
 /////////////////////////////////////////////////////
 // NOTE: these tests are designed for mongo!
 /////////////////////////////////////////////////////
 
-var User = require('../app/models/user');
-var Link = require('../app/models/link');
+// var User = require('../app/models/user');
+// var Link = require('../app/models/link');
 ('', function() {
 
   beforeEach(function(done) {
@@ -22,9 +22,9 @@ var Link = require('../app/models/link');
       .end(function(err, res) {
 
         // Delete objects from db so they can be created later for the test
-        Link.remove({url : 'http://www.roflzoo.com/'}).exec();
-        User.remove({username : 'Savannah'}).exec();
-        User.remove({username : 'Phillip'}).exec();
+        db.models.urls.remove({url : 'http://www.roflzoo.com/'}).exec();
+        db.models.users.remove({username : 'Savannah'}).exec();
+        db.models.users.remove({username : 'Phillip'}).exec();
 
         done();
       });
@@ -63,7 +63,7 @@ var Link = require('../app/models/link');
             'url': 'http://www.roflzoo.com/'})
           .expect(200)
           .expect(function(res) {
-            Link.findOne({'url' : 'http://www.roflzoo.com/'})
+            db.models.urls.findOne({'url' : 'http://www.roflzoo.com/'})
               .exec(function(err,link){
                 if(err) console.log(err);
                 expect(link.url).to.equal('http://www.roflzoo.com/');
@@ -79,7 +79,7 @@ var Link = require('../app/models/link');
             'url': 'http://www.roflzoo.com/'})
           .expect(200)
           .expect(function(res) {
-            Link.findOne({'url' : 'http://www.roflzoo.com/'})
+            db.models.urls.findOne({'url' : 'http://www.roflzoo.com/'})
               .exec(function(err,link){
                 if(err) console.log(err);
                 expect(link.title).to.equal('Rofl Zoo - Daily funny animal pictures');
@@ -93,7 +93,7 @@ var Link = require('../app/models/link');
     describe('With previously saved urls: ', function() {
 
       beforeEach(function(done) {
-        link = new Link({
+        link = new db.models.urls({
           url: 'http://www.roflzoo.com/',
           title: 'Rofl Zoo - Daily funny animal pictures',
           base_url: 'http://127.0.0.1:4568',
@@ -181,7 +181,7 @@ var Link = require('../app/models/link');
           'password': 'Svnh' })
         .expect(302)
         .expect(function() {
-          User.findOne({'username': 'Svnh'})
+          db.models.users.findOne({'username': 'Svnh'})
             .exec(function(err,user) {
               expect(user.username).to.equal('Svnh');
             });
