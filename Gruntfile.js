@@ -91,7 +91,7 @@ module.exports = function(grunt) {
       lib: ['./public/lib/*.js', '!./public/lib/*.min.js'],
       client: ['./public/client/*.js'],
       style: ['./public/style.css'],
-      dist: ['./public/dist/*.js', '!./public/dist/*.min.js']
+      dist: ['./public/dist/*.js']
 
     },
 
@@ -173,10 +173,10 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
+    'clean:dist',
     'concat',
     'cssmin',
     'uglify:client',
-    //'clean',
   ]);
 
   grunt.registerTask('upload', function(n) {
